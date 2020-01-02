@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+    <head>
+	     <title>TimePlayer</title>
+		 <meta charset="UTF-8"></meta>
+		 <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    </head>
+	<body>
+	     <div class="display_box" id="play"></div>
+		 <div class="progress">
+		      <div class="play"></div> <!-- onclick="display()"-->
+			  <div class="progress_bar">
+			      <div class="progress_bar_cover"></div><!--// onclick="pause()"-->
+			  </div>
+			  <div class="time">-6.28</div>
+		 </div>
+		 <script>
+		 	var str="Hello, I am Aaron Robert."+"<br/>"+"Welcome to linkworld.";
+		 	var display_box=document.querySelector(".display_box");
+		 	var play=document.querySelector(".play");
+		 	var progress_bar_cover=document.querySelector(".progress_bar_cover");
+		 	var progress_bar=document.querySelector(".progress_bar");
+		 	var content="";
+		 	var numTwo=1;
+		 	var flag=0;
+		 	var index=0;  //作为数组的下标
+		 	var ID;
+            play.onclick=function(){
+            	if(flag===0){  //暂停状态变为播放状态
+            		play.style.backgroundImage="url(img/pause.png)";
+            		flag=1;
+            		if(numTwo===1){
+            			SetProgress();
+            		}
+            		if(numTwo===100){
+            			numTwo=1;
+            			progress_bar_cover.setAttribute('style', 'width:' + numTwo + '%');
+            			SetProgress();
+            		}
+            	    if(numTwo>1&&numTwo<100){
+            	    	restart();
+            	    }
+            	}  
+            	else{  //播放状态变为暂停状态
+            		play.style.backgroundImage="url(img/play.png)";
+            		flag=0;
+					display_box.innerHTML = content ;
+					clearInterval(ID);
+            	}
+            }
+            var mousePos;
+		 	var x,y;
+            // 鼠标在播放条上点击时进行捕获并进行处理
+            progress_bar.onclick=function(){
+             	var mousex=x;
+             	var mousey=y;
+             	if(flag===0){  //暂停状态
+             		numTwo=(mousex-progress_bar_cover.offsetLeft)/6.3;
+             		index=parseInt(numTwo/2.04);
+             		content=str.substring(0,index);
+             		display_box.innerHTML = content ;
+             		progress_bar_cover.setAttribute('style', 'width:' + numTwo + '%');
+             	}
+             	else{  //播放状态
+             		numTwo=(mousex-progress_bar_cover.offsetLeft)/6.3;
+             		index=parseInt(numTwo/2.04);
+             		content=str.substring(0,index);
+             		display_box.innerHTML = content ;
+             		progress_bar_cover.setAttribute('style', 'width:' + numTwo + '%');
+             		//restart();
+             	}
+             	
+             }
+            //将mouseMove函数赋值于document.onmousemove，mouseMove 会获取鼠标移动事件
+            document.onmousemove = mouseMove;
+			function mouseMove(event){
+				event = event || window.event;
+				//在Firefox下"||window.event"将不起作用，因为event已经有了赋值。在 MSIE 中 event 为空，所以得到 window.event 。
+				mousePos = mousePosition(event);
+			}
+			function mousePosition(event){
+				if(event.pageX || event.pageY){
+					x=event.pageX;
+					y=event.pageY;
+				}
+			}
+            function SetProgress() {          
+				ID = setInterval(function () {
+					content = content + str[index];
+				    display_box.innerHTML = content ;
+				    numTwo = numTwo + 2.05;
+				    if (numTwo < 100) {
+	            		progress_bar_cover.setAttribute('style', 'width:' + numTwo + '%');
+	                } 
+				    index++;
+				    if(index === str.length){
+				    	index=0
+					    display_box.innerHTML = content ;
+					    content="";
+					    clearInterval(ID);
+					    numTwo=100;
+					    progress_bar_cover.setAttribute('style', 'width:' + 100 + '%');
+					    flag=0;
+            			play.style.backgroundImage="url(img/play.png)";
+					}
+				},100);
+            }
+            function restart( ){　
+				ID = setInterval(function () {
+					content = content + str[index];
+				    display_box.innerHTML = content ;
+				    numTwo = numTwo + 2.05;
+				    if (numTwo < 100) {
+	            		progress_bar_cover.setAttribute('style', 'width:' + numTwo + '%');
+	                } 
+				    index++;
+				    if(index === str.length){
+				    	index=0
+					    display_box.innerHTML = content ;
+					    content="";
+					    clearInterval(ID);
+					    numTwo=100;
+					    progress_bar_cover.setAttribute('style', 'width:' + 100 + '%');
+					    flag=0;
+            			play.style.backgroundImage="url(img/play.png)";
+					}
+				},100);
+			}	
+		 </script>
+	</body>
+</html>
